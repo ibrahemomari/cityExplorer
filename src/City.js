@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { Component } from 'react'
-import { Container,Row,Col,Form,Button, Table} from 'react-bootstrap'
+import { Container,Row,Col,Form,Button, Table,Navbar,Card,ListGroup ,ListGroupItem} from 'react-bootstrap';
+
 
 class City extends Component {
     constructor(props){
@@ -12,7 +13,9 @@ class City extends Component {
             longitude:'',
             mapImg:'.',
             error:'',
-            show:false
+            show:false,
+            weather:[],
+            moveis:[]
         }
 
     }
@@ -26,11 +29,9 @@ class City extends Component {
     }
     getData= async (e)=>
     {   try{
-
-   
         e.preventDefault();
         let axiosResData= await axios.get(`https://us1.locationiq.com/v1/search.php?key=pk.b848c1ee9a6d10f565222020b02495f1&city=${this.state.userAreaInput}&format=json`);
-        console.log(axiosResData);
+       
        
         this.setState({
             show:true,
@@ -47,6 +48,18 @@ class City extends Component {
             mapImg:map.config.url
             
         })
+        let localWeatherData= await axios.get(`${process.env.REACT_APP_SERVER_API}/weather?lat=${this.state.latitude}&lon=${this.state.longitude}`);
+        this.setState({
+            weather:localWeatherData.data
+        })
+        
+        
+        let localMoviesData= await axios.get(`${process.env.REACT_APP_SERVER_API}/movies?query=${this.state.userAreaInput}`)
+        this.setState({
+            moveis:localMoviesData.data
+        })
+        console.log(this.state.moveis,'type='+ typeof(this.state.moveis));
+        
     }
     catch{
         this.setState({
@@ -62,9 +75,8 @@ class City extends Component {
 
     render() {
         return (
-            <section>
                 <Container>
-                    <Row>
+                    <Row className="search--section">
                         <Form onSubmit={this.getData}>
                             <Form.Group>
                                 <Form.Label>Location :</Form.Label>
@@ -95,17 +107,81 @@ class City extends Component {
                                 </td>
                             </tr>
                             <tr className='img-row'>
-                                    <img src={this.state.mapImg} alt={this.state.location?this.state.location.length>0:'.'} className='map-img'></img>
+                                    <img src={this.state.mapImg} alt={' '} className='map-img'></img>
                             </tr>
                         </tbody> 
                         </Table>
                         }
                         </Row>
-                        
+                        <Row className="justify-content-center section--title">
+                            <Navbar.Text>
+                                Weather for 16 day 
+                            </Navbar.Text>
+                                <i class="uil uil-cloud-moon-meatball"></i>
+                            
+                        </Row>
+                        <Row>
+                          
+                            <Table responsive className="weather--table">
+                                <thead>
+                                    <th>Day #</th>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                </thead>
+                                <tbody>
+                            {       
+                                    this.state.show&&
+                                   this.state.weather.map((value,index)=>{
+                                       return(
+                                        <tr>
+                                        <td>{index+1}</td>
+                                       <td key={index}>{value.description}</td>
+                                       <td key={index}>{value.date}</td>
+                                       </tr>
+                                       )
+                                    })
+                                  
+                            }
+                            </tbody>
+                            </Table>
+                        </Row>
+                        <Row className="justify-content-center section--title">
+                            <Navbar.Text>
+                                Movies you may like
+                            </Navbar.Text>
+                            <i class="uil uil-clapper-board"></i>
+                        </Row> 
+                        <Row className="movies-section">
+                            {
+                                this.state.show&&
+                                this.state.moveis.map((value,index)=>{
+                                    return(
+                                        <Card key={index}>
+                                            <Card.Img variant="top" src={value.image} />
+                                            <Card.Body>
+                                                <Card.Title>
+                                                    {value.title}
+                                                </Card.Title>
+                                                <Card.Text>
+                                                    {value.overview}
+                                                </Card.Text>
+                                            </Card.Body>
+                                            <ListGroup className="list-group-flush">
+                                                <ListGroupItem><b>Popularity: </b>{value.popularity}</ListGroupItem>
+                                                <ListGroupItem><b>Rating: </b>{value.rating}</ListGroupItem>
+                                                <ListGroupItem><b>Total Reating: </b>{value.totalReating}</ListGroupItem>
+                                                <ListGroupItem><b>Release Date: </b>{value.releaseDate}</ListGroupItem>
+                                            </ListGroup>
+                                        </Card>
+                                    )
+                                })
+                            }
+                            
+                        </Row>     
                 </Container>
-            </section>
+            
+            
         )
     }
 }
-
 export default City
