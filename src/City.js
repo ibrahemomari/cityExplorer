@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { Component } from 'react'
-import { Container,Row,Col,Form,Button, Table,Navbar,Card,ListGroup ,ListGroupItem} from 'react-bootstrap';
+import { Container,Row,Form,Button, Table,Navbar,Card,ListGroup ,ListGroupItem} from 'react-bootstrap';
 
 
 class City extends Component {
