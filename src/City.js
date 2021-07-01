@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { Component } from 'react'
-import { Container,Row,Form,Button, Table,Navbar,Card,ListGroup ,ListGroupItem} from 'react-bootstrap';
+import { Container,Row,Form,Button, Table,Navbar,Card,ListGroup ,ListGroupItem,Alert} from 'react-bootstrap';
 
 
 class City extends Component {
@@ -15,7 +15,8 @@ class City extends Component {
             error:'',
             show:false,
             weather:[],
-            moveis:[]
+            moveis:[],
+            lastDataUpdate:''
         }
 
     }
@@ -38,7 +39,8 @@ class City extends Component {
             location:axiosResData.data[0].display_name,
             latitude:axiosResData.data[0].lat,
             longitude:axiosResData.data[0].lon,
-            error:""
+            error:"",
+            lastDataUpdate:""
             
             
         })
@@ -51,12 +53,14 @@ class City extends Component {
         let localWeatherData= await axios.get(`${process.env.REACT_APP_SERVER_API}/weather?lat=${this.state.latitude}&lon=${this.state.longitude}`);
         this.setState({
             weather:localWeatherData.data
+            
         })
         
         
         let localMoviesData= await axios.get(`${process.env.REACT_APP_SERVER_API}/movies?query=${this.state.userAreaInput}`)
         this.setState({
-            moveis:localMoviesData.data
+            moveis:localMoviesData.data,
+            lastDataUpdate:localMoviesData.data[localMoviesData.data.length-1].lastUpdate
         })
         console.log(this.state.moveis,'type='+ typeof(this.state.moveis));
         
@@ -87,29 +91,38 @@ class City extends Component {
                         </Form>
                     </Row>
                     <Row>
+                        {
+                            this.state.show&&
+                            <Alert  variant="warning" className="lastUpdat--box">
+                            <span>tha data well update every day</span> <br></br>
+                            {'the last update for data is :'+this.state.lastDataUpdate}
+                        </Alert>
+                        }
+                    </Row>
+                    <Row>
                         { this.state.show&&
                             <Table striped bordered hover variant="dark">
-                        <thead>
-                            <th>Location</th>
-                            <th>Latitude</th>
-                            <th>Longitude</th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <h1>{this.state.location}</h1>
-                                </td>
-                                <td>
-                                    <h1>{this.state.latitude}</h1>
-                                </td>
-                                <td>
-                                    <h1>{this.state.longitude}</h1>
-                                </td>
-                            </tr>
-                            <tr className='img-row'>
-                                    <img src={this.state.mapImg} alt={' '} className='map-img'></img>
-                            </tr>
-                        </tbody> 
+                                <thead>
+                                    <th>Location</th>
+                                    <th>Latitude</th>
+                                    <th>Longitude</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <h1>{this.state.location}</h1>
+                                        </td>
+                                        <td>
+                                            <h1>{this.state.latitude}</h1>
+                                        </td>
+                                        <td>
+                                            <h1>{this.state.longitude}</h1>
+                                        </td>
+                                    </tr>
+                                    <tr className='img-row'>
+                                            <img src={this.state.mapImg} alt={' '} className='map-img'></img>
+                                    </tr>
+                                </tbody> 
                         </Table>
                         }
                         </Row>
