@@ -124,3 +124,10 @@
   overflow-x: scroll;
 }
 
+.lastUpdat--box{
+  font-weight: 600;
+}
+.lastUpdat--box span{
+  font-weight: normal;
+  font-style: italic;
+}
