@@ -103,9 +103,11 @@ class City extends Component {
                         { this.state.show&&
                             <Table striped bordered hover variant="dark">
                                 <thead>
-                                    <th>Location</th>
-                                    <th>Latitude</th>
-                                    <th>Longitude</th>
+                                    <tr>
+                                        <th>Location</th>
+                                        <th>Latitude</th>
+                                        <th>Longitude</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
@@ -120,7 +122,10 @@ class City extends Component {
                                         </td>
                                     </tr>
                                     <tr className='img-row'>
+                                        <td>
                                             <img src={this.state.mapImg} alt={' '} className='map-img'></img>
+
+                                        </td>
                                     </tr>
                                 </tbody> 
                         </Table>
@@ -130,26 +135,28 @@ class City extends Component {
                             <Navbar.Text>
                                 Weather for 16 day 
                             </Navbar.Text>
-                                <i class="uil uil-cloud-moon-meatball"></i>
+                                <i className="uil uil-cloud-moon-meatball"></i>
                             
                         </Row>
                         <Row>
                           
                             <Table responsive className="weather--table">
                                 <thead>
-                                    <th>Day #</th>
-                                    <th>Date</th>
-                                    <th>Description</th>
+                                    <tr>
+                                        <th>Day #</th>
+                                        <th>Date</th>
+                                        <th>Description</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
                             {       
                                     this.state.show&&
                                    this.state.weather.map((value,index)=>{
                                        return(
-                                        <tr>
+                                        <tr key={index}>
                                         <td>{index+1}</td>
-                                       <td key={index}>{value.description}</td>
-                                       <td key={index}>{value.date}</td>
+                                       <td >{value.description}</td>
+                                       <td>{value.date}</td>
                                        </tr>
                                        )
                                     })
@@ -162,7 +169,7 @@ class City extends Component {
                             <Navbar.Text>
                                 Movies you may like
                             </Navbar.Text>
-                            <i class="uil uil-clapper-board"></i>
+                            <i className="uil uil-clapper-board"></i>
                         </Row> 
                         <Row className="movies-section">
                             {
